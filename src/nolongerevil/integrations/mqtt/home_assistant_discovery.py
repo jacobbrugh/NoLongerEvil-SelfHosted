@@ -63,10 +63,9 @@ def build_climate_discovery_payload(
     payload: dict[str, Any] = {
         # Unique identifier
         "unique_id": f"nolongerevil_{serial}",
-        # Device name
-        "name": device_name,
-        # NEW: HA 2026.4+ compliant
-        "default_entity_id": f"climate.nest_{serial}",
+        # Main feature of the device: HA names it, and generates its entity_id,
+        # from the device name alone instead of repeating the device name
+        "name": None,
         # Device info (groups all entities together)
         "device": {
             "identifiers": [f"nolongerevil_{serial}"],
@@ -137,7 +136,6 @@ def build_temperature_sensor_discovery(serial: str, topic_prefix: str) -> dict[s
     return {
         "unique_id": f"nolongerevil_{serial}_temperature",
         "name": "Temperature",
-        "default_entity_id": f"sensor.nest_{serial}_temperature",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/current_temperature",
         "unit_of_measurement": "°C",
@@ -157,7 +155,6 @@ def build_humidity_sensor_discovery(serial: str, topic_prefix: str) -> dict[str,
     return {
         "unique_id": f"nolongerevil_{serial}_humidity",
         "name": "Humidity",
-        "default_entity_id": f"sensor.nest_{serial}_humidity",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/current_humidity",
         "unit_of_measurement": "%",
@@ -177,7 +174,6 @@ def build_outdoor_temperature_sensor_discovery(serial: str, topic_prefix: str) -
     return {
         "unique_id": f"nolongerevil_{serial}_outdoor_temperature",
         "name": "Outdoor Temperature",
-        "default_entity_id": f"sensor.nest_{serial}_outdoor_temperature",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/outdoor_temperature",
         "unit_of_measurement": "°C",
@@ -197,7 +193,6 @@ def build_occupancy_binary_sensor_discovery(serial: str, topic_prefix: str) -> d
     return {
         "unique_id": f"nolongerevil_{serial}_occupancy",
         "name": "Occupancy",
-        "default_entity_id": f"binary_sensor.nest_{serial}_occupancy",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/occupancy",
         "payload_on": HaPreset.HOME,
@@ -217,7 +212,6 @@ def build_fan_binary_sensor_discovery(serial: str, topic_prefix: str) -> dict[st
     return {
         "unique_id": f"nolongerevil_{serial}_fan",
         "name": "Fan",
-        "default_entity_id": f"binary_sensor.nest_{serial}_fan",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/fan_running",
         "payload_on": "true",
@@ -237,7 +231,6 @@ def build_leaf_binary_sensor_discovery(serial: str, topic_prefix: str) -> dict[s
     return {
         "unique_id": f"nolongerevil_{serial}_leaf",
         "name": "Eco Mode",
-        "default_entity_id": f"binary_sensor.nest_{serial}_leaf",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/eco",
         "payload_on": "true",
@@ -257,7 +250,6 @@ def build_battery_sensor_discovery(serial: str, topic_prefix: str) -> dict[str, 
     return {
         "unique_id": f"nolongerevil_{serial}_battery",
         "name": "Battery",
-        "default_entity_id": f"sensor.nest_{serial}_battery",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/battery",
         "unit_of_measurement": "%",
@@ -277,7 +269,6 @@ def build_rssi_sensor_discovery(serial: str, topic_prefix: str) -> dict[str, Any
     return {
         "unique_id": f"nolongerevil_{serial}_rssi",
         "name": "WiFi Signal",
-        "default_entity_id": f"sensor.nest_{serial}_rssi",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/rssi",
         "unit_of_measurement": "dBm",
@@ -301,7 +292,6 @@ def build_filter_replacement_binary_sensor_discovery(
     return {
         "unique_id": f"nolongerevil_{serial}_filter_replacement",
         "name": "Filter Replacement Needed",
-        "default_entity_id": f"binary_sensor.nest_{serial}_filter_replacement",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/filter_replacement_needed",
         "payload_on": "true",
@@ -325,7 +315,6 @@ def build_filter_runtime_sensor_discovery(
     return {
         "unique_id": f"nolongerevil_{serial}_filter_runtime",
         "name": "Filter Runtime",
-        "default_entity_id": f"sensor.nest_{serial}_filter_runtime",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/filter_runtime_days",
         "unit_of_measurement": "d",
@@ -349,7 +338,6 @@ def build_time_to_target_sensor_discovery(
     return {
         "unique_id": f"nolongerevil_{serial}_time_to_target",
         "name": "Time to Target",
-        "default_entity_id": f"sensor.nest_{serial}_time_to_target",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/time_to_target",
         "unit_of_measurement": "min",
@@ -372,7 +360,6 @@ def build_sunlight_correction_binary_sensor_discovery(
     return {
         "unique_id": f"nolongerevil_{serial}_sunlight_correction",
         "name": "Sunlight Correction Active",
-        "default_entity_id": f"binary_sensor.nest_{serial}_sunlight_correction",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/sunlight_correction_active",
         "payload_on": "true",
@@ -393,7 +380,6 @@ def build_compressor_lockout_sensor_discovery(serial: str, topic_prefix: str) ->
     return {
         "unique_id": f"nolongerevil_{serial}_compressor_lockout",
         "name": "Compressor Lockout",
-        "default_entity_id": f"sensor.nest_{serial}_compressor_lockout",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/compressor_lockout_timeout",
         "unit_of_measurement": "s",
@@ -414,7 +400,6 @@ def build_learning_mode_binary_sensor_discovery(serial: str, topic_prefix: str) 
     return {
         "unique_id": f"nolongerevil_{serial}_learning_mode",
         "name": "Learning Mode",
-        "default_entity_id": f"binary_sensor.nest_{serial}_learning_mode",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/learning_mode",
         "payload_on": "true",
@@ -438,7 +423,6 @@ def build_heat_pump_ready_binary_sensor_discovery(
     return {
         "unique_id": f"nolongerevil_{serial}_heat_pump_ready",
         "name": "Heat Pump Ready",
-        "default_entity_id": f"binary_sensor.nest_{serial}_heat_pump_ready",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/heat_pump_ready",
         "payload_on": "true",
@@ -459,7 +443,6 @@ def build_local_ip_sensor_discovery(serial: str, topic_prefix: str) -> dict[str,
     return {
         "unique_id": f"nolongerevil_{serial}_local_ip",
         "name": "Local IP",
-        "default_entity_id": f"sensor.nest_{serial}_local_ip",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/local_ip",
         "icon": "mdi:ip-network",
@@ -478,7 +461,6 @@ def build_fan_timer_remaining_sensor_discovery(serial: str, topic_prefix: str) -
     return {
         "unique_id": f"nolongerevil_{serial}_fan_timer_remaining",
         "name": "Fan Timer Remaining",
-        "default_entity_id": f"sensor.nest_{serial}_fan_timer_remaining",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/fan_timer_remaining",
         "unit_of_measurement": "min",
@@ -498,7 +480,6 @@ def build_fan_duration_number_discovery(serial: str, topic_prefix: str) -> dict[
     return {
         "unique_id": f"nolongerevil_{serial}_fan_duration",
         "name": "Fan Duration",
-        "default_entity_id": f"number.nest_{serial}_fan_duration",
         "device": {"identifiers": [f"nolongerevil_{serial}"]},
         "state_topic": f"{topic_prefix}/{serial}/ha/fan_duration",
         "command_topic": f"{topic_prefix}/{serial}/ha/fan_duration/set",
